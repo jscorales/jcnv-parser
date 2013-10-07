@@ -101,16 +101,16 @@ def processJasperSyllabusSequences(sequences):
 	global studentHistory
 
 	for sequence in sequences:
-		print sequence['title'], sequence['name']
-		if sequence['status'] == 'Completed':
-			if not isInStudentHistory(sequence['name']):
-				studentHistoryItem = {}
-				studentHistoryItem['assetCode'] = sequence['name']
-				studentHistoryItem['assetPath'] = sequence['path']
-				studentHistoryItem['name'] = sequence['title']
-				studentHistoryItem['dateCompleted'] = sequence['dateCompleted']
+		if type(sequence) is not unicode:
+			if sequence['status'] == 'Completed':
+				if not isInStudentHistory(sequence['name']):
+					studentHistoryItem = {}
+					studentHistoryItem['assetCode'] = sequence['name']
+					studentHistoryItem['assetPath'] = sequence['path']
+					studentHistoryItem['name'] = sequence['title']
+					studentHistoryItem['dateCompleted'] = sequence['dateCompleted']
 
-				studentHistory.append(studentHistoryItem)
+					studentHistory.append(studentHistoryItem)
 
 def isInStudentHistory(assetCode):
 	result = False
@@ -161,9 +161,15 @@ def processKvcSyllabus(lessons):
 	if not jasperSyllabus is None:
 		processJasperSyllabusSections(jasperSyllabus['syllabus']['section']['section'])
 
+def writeToCsvVile():
+	for studentHistoryItem in studentHistory:
+		pprint(studentHistoryItem)
+		f = open('output.csv', 'a')
+		f.write(studentHistoryItem['assetCode'] + ', ' + studentHistoryItem['assetPath'] + ', ' + studentHistoryItem['name'] + ', ' + studentHistoryItem['dateCompleted'] + '\n')
+
 #doJasperInitHandhake()
 processKvcSyllabus(kvcData['syllabus']['lesson'])
-#pprint(studentHistory)
+writeToCsvVile()
 
 
 
